@@ -5,9 +5,13 @@ import { check, sleep } from "k6";
 export const options = {
   // Interações, ou seja, quantas vezes o teste vai rodar
   // iterations: 50,
-  vus: 50, // quantidade de usuários virtuais
-  duration: "30s", // duração do teste
-
+  // vus: 50, // quantidade de usuários virtuais
+  // duration: "30s", // duração do teste
+  stages: [
+    { duration: "5", target: 10 },
+    { duration: "20s", target: 10 },
+    { duration: "5s", target: 0 },
+  ],
   thresholds: {
     http_req_duration: ["p(90)<3000", "max<5000"], // 90% das requisições devem ser menores que 10ms e o máximo de 4ms
     http_req_failed: ["rate<0.01"], // a taxa de falhas deve ser menor que 1%
