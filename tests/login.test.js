@@ -1,13 +1,14 @@
 import http from "k6/http";
 //permite o check e sleep, no mesmo import do k6 para validar a resposta e simular o tempo de espera entre as requisições
 import { check, sleep } from "k6";
+import { pegarBaseUrl } from "../utils/variaveis.js";
 
 const postLogin = JSON.parse(open("../fixtures/postLogin.json")); // passar via variavel de ambiente, para não expor o usuário e senha no código, mas sim em um arquivo json separado.
 
 export const options = {
   // Interações, ou seja, quantas vezes o teste vai rodar
-  // iterations: 50,
-  // vus: 50, // quantidade de usuários virtuais
+  // iterations: 10,
+  // vus: 10, // quantidade de usuários virtuais
   // duration: "30s", // duração do teste
 
   stages: [
@@ -23,7 +24,7 @@ export const options = {
 };
 
 export default function () {
-  const url = "http://localhost:3000/login";
+  const url = pegarBaseUrl() + "/login";
 
   // postLogin.username = "julio.lima"; // posso trocar o valor de username e/ou senha, se desejar na hora da execução
   // console.log("Conteúdo do postLogin: ", postLogin);
@@ -42,7 +43,7 @@ export default function () {
 
   //validação de check, depois performance.
   const res = http.post(url, payload, params);
-  
+
   check(res, {
     "Validar que o status é 200": (r) => r.status === 200,
     "Validar que o Token é string": (r) => typeof r.json().token === "string",
